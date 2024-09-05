@@ -1,0 +1,18 @@
+{
+  "scripts":{
+    "index": "ts-node index.ts",
+    "stack": "ts-node stack.ts",
+    "queue": "ts-node queue.ts",
+    "circular-queue": "ts-node circular-queue.ts",
+    "array-circular-queue": "ts-node array-circular-queue.ts",
+    "array-circular-deque": "ts-node array-circular-deque.ts",
+    "priority-queue": "ts-node priority-queue.ts",
+    "binary-tree": "ts-node binary-tree.ts",
+    "singly-linked-list": "ts-node singly-linked-list.ts",
+    "binary-search-tree": "ts-node binary-search-tree.ts",
+    "ts-node": "ts-node"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.2"
+  }
+}
