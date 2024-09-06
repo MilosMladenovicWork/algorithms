@@ -35,15 +35,13 @@ function preorderTreeTraversal(tree: any) {
 }
 
 function inorderTreeTraversal(tree: any) {
-  const result: any[] = [];
+  const result: any[] = []
   const stack: any[] = []
-
   let currentNode = tree;
 
-  while(stack.length > 0 || currentNode){
+  while(currentNode || stack.length > 0){
     while(currentNode){
-      stack.push(currentNode);
-  
+      stack.push(currentNode)
       currentNode = currentNode.left;
     }
 
@@ -51,7 +49,9 @@ function inorderTreeTraversal(tree: any) {
 
     result.push(node.value);
 
-    currentNode = node.right;
+    if(node.right){
+      currentNode = node.right;
+    }
   }
 
   return result;
@@ -61,28 +61,27 @@ console.log(inorderTreeTraversal(tree))
 
 function postorderTreeTraversal(tree: any) {
   const result: any[] = [];
-
-  let previousNode = null;
-  let currentNode = tree;
   const stack: any[] = [];
+  let currentNode = tree;
+  let previousNode = null;
 
-  while(stack.length > 0 || currentNode){
+  while(currentNode || stack.length > 0){
     while(currentNode){
       stack.push(currentNode);
-  
+
       currentNode = currentNode.left;
     }
 
-    const peekedNode = stack[stack.length - 1];
+    let peekedNode = stack[stack.length - 1];
 
     if(peekedNode.right && previousNode !== peekedNode.right){
       currentNode = peekedNode.right;
     }else{
-      const node = stack.pop()
+      const node = stack.pop()!;
       
       previousNode = node;
 
-      result.push(node.value)
+      result.push(node.value);
     }
   }
 
