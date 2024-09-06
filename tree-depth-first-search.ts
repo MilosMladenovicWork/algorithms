@@ -35,58 +35,61 @@ function preorderTreeTraversal(tree: any) {
 }
 
 function inorderTreeTraversal(tree: any) {
-  const stack: any[] = [];
   const result: any[] = [];
+  const stack: any[] = []
+
   let currentNode = tree;
 
-  while (currentNode || stack.length > 0) {
-    while (currentNode) {
+  while(stack.length > 0 || currentNode){
+    while(currentNode){
       stack.push(currentNode);
-
+  
       currentNode = currentNode.left;
     }
 
-    const node = stack.pop();
+    const node = stack.pop()!;
+
     result.push(node.value);
 
     currentNode = node.right;
   }
 
-  console.log(result);
+  return result;
 }
 
-// inorderTreeTraversal(tree);
+console.log(inorderTreeTraversal(tree))
 
 function postorderTreeTraversal(tree: any) {
-  let currentNode: any = tree;
   const result: any[] = [];
-  let lastVisitedNode: any;
+
+  let previousNode = null;
+  let currentNode = tree;
   const stack: any[] = [];
 
-  while (currentNode || stack.length > 0) {
-    while (currentNode) {
+  while(stack.length > 0 || currentNode){
+    while(currentNode){
       stack.push(currentNode);
+  
       currentNode = currentNode.left;
     }
 
-    const node = stack[stack.length - 1];
+    const peekedNode = stack[stack.length - 1];
 
-    if (node.right && node.right !== lastVisitedNode) {
-      currentNode = node.right;
-    } else {
-      const poppedNode = stack.pop();
-      lastVisitedNode = poppedNode;
+    if(peekedNode.right && previousNode !== peekedNode.right){
+      currentNode = peekedNode.right;
+    }else{
+      const node = stack.pop()
+      
+      previousNode = node;
 
-      result.push(poppedNode.value);
+      result.push(node.value)
     }
   }
-
-  console.log(result);
 
   return result;
 }
 
-postorderTreeTraversal(tree);
+// console.log(postorderTreeTraversal(tree))
 
 function preorderTreeTraversalRecursive(node: any) {
   console.log(node.value);
