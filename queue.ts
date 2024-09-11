@@ -1,75 +1,92 @@
-class QueueNode<T> {
-  data: T;
-  next: QueueNode<T> | null;
-
-  constructor(data: T) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-class Queue<T> {
-  front: QueueNode<T> | null;
-  rear: QueueNode<T> | null;
+class Queue {
+  list: QueueLinkedList;
 
   constructor() {
-    this.front = null;
-    this.rear = null;
+    this.list = new QueueLinkedList();
   }
 
-  enqueue(data: T) {
-    const node = new QueueNode(data);
-
-    if (!this.rear) {
-      this.front = node;
-      this.rear = node;
-    } else {
-      this.rear.next = node;
-      this.rear = node;
-    }
+  enqueue(value: any) {
+    this.list.addToTail(value);
 
     return this;
   }
 
   dequeue() {
-    if (!this.front) {
-      return null;
-    }
-
-    const node = this.front;
-    const nodeData = node.data;
-
-    if (this.front === this.rear) {
-      this.front = null;
-      this.rear = null;
-
-      return nodeData;
-    }
-
-    this.front = node.next;
-    node.next = null;
-
-    return nodeData;
-  }
-
-  peek() {
-    if (!this.front) {
-      return null;
-    }
-
-    return this.front.data;
-  }
-
-  isEmpty() {
-    return this.front === null;
+    return this.list.removeFromHead();
   }
 
   printQueue() {
-    let currentNode = this.front;
-    while (currentNode !== null) {
-      console.log(currentNode.data);
+    this.list.traverse((node) => console.log(node.data));
+  }
+}
+
+class QueueLinkedList {
+  head: QueueLinkedListNode | null;
+  tail: QueueLinkedListNode | null;
+
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  addToTail(data: any) {
+    const node = new QueueLinkedListNode(data);
+
+    if (this.tail) {
+      this.tail.next = node;
+    }
+
+    this.tail = node;
+
+    if (!this.head) {
+      this.head = node;
+    }
+
+    return this;
+  }
+
+  removeFromHead() {
+    const head = this.head;
+    const tail = this.tail;
+
+    if (!head) {
+      return head;
+    }
+
+    this.head = head.next;
+
+    if (head === tail) {
+      this.tail = null;
+    }
+
+    return head.data;
+  }
+
+  getHead() {
+    if (this.head) {
+      return this.head.data;
+    }
+
+    return this.head;
+  }
+
+  traverse(callback: (node: QueueLinkedListNode) => void) {
+    let currentNode = this.head;
+
+    while (currentNode) {
+      callback(currentNode);
       currentNode = currentNode.next;
     }
+  }
+}
+
+class QueueLinkedListNode {
+  data: any;
+  next: QueueLinkedListNode | null;
+
+  constructor(data: any) {
+    this.data = data;
+    this.next = null;
   }
 }
 
@@ -77,17 +94,14 @@ const queue = new Queue();
 
 queue.enqueue(10).enqueue(100).enqueue(1000);
 console.log(queue.printQueue());
-console.log(queue.front);
-console.log(queue.rear);
+console.log(queue);
+console.log(queue);
 
 queue.dequeue();
-console.log(queue.front);
-console.log(queue.rear);
+console.log(queue);
 queue.dequeue();
-console.log(queue.front);
-console.log(queue.rear);
+console.log(queue);
 queue.dequeue();
-console.log(queue.front);
-console.log(queue.rear);
+console.log(queue);
 
 console.log(queue.dequeue());
