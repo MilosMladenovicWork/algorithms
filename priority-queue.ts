@@ -1,23 +1,38 @@
 class PriorityQueue {
-  array: number[] = [];
+  minHeap: MinHeap;
+
+  constructor() {
+    this.minHeap = new MinHeap();
+  }
+
+  enqueue(value: number) {
+    this.minHeap.add(value);
+    return this;
+  }
+
+  dequeue() {
+    return this.minHeap.removeMin();
+  }
+}
+
+class MinHeap {
+  array: number[];
 
   constructor() {
     this.array = [];
   }
 
-  enqueue(value: number) {
+  add(value: number) {
     this.array.push(value);
 
-    for (let i = Math.floor(this.array.length / 2) - 1; i >= 0; i--) {
-      this.heapify(this.array, i, this.array.length);
-    }
+    this.heapifyUp();
 
     return this;
   }
 
-  dequeue() {
+  removeMin() {
     if (this.array.length === 0) {
-      return 0;
+      return null;
     }
 
     [this.array[0], this.array[this.array.length - 1]] = [
@@ -25,40 +40,50 @@ class PriorityQueue {
       this.array[0],
     ];
 
-    const dequeuedData = this.array.pop();
+    const minValue = this.array.pop()!;
 
-    for (let i = Math.floor(this.array.length / 2) - 1; i >= 0; i--) {
-      this.heapify(this.array, i, this.array.length);
-    }
+    this.heapifyDown();
 
-    return dequeuedData;
+    return minValue;
   }
 
-  private heapify(array: number[], nodeIndex: number, heapSize: number) {
-    let largestIndex = nodeIndex;
-    let leftChildIndex = 2 * nodeIndex + 1;
-    let rightChildIndex = 2 * nodeIndex + 2;
+  private heapifyUp() {
+    for (let i = Math.floor(this.array.length / 2) - 1; i >= 0; i--) {
+      this.heapify(i);
+    }
+  }
+
+  private heapifyDown() {
+    for (let i = Math.floor(this.array.length / 2) - 1; i >= 0; i--) {
+      this.heapify(i);
+    }
+  }
+
+  private heapify(index: number) {
+    const leftChild = 2 * index + 1;
+    const rightChild = 2 * index + 2;
+    let smallestValueIndex = index;
 
     if (
-      leftChildIndex < heapSize &&
-      array[leftChildIndex] > array[largestIndex]
+      leftChild < this.array.length &&
+      this.array[leftChild] < this.array[smallestValueIndex]
     ) {
-      largestIndex = leftChildIndex;
+      smallestValueIndex = leftChild;
     }
 
     if (
-      rightChildIndex < heapSize &&
-      array[rightChildIndex] > array[largestIndex]
+      rightChild < this.array.length &&
+      this.array[rightChild] < this.array[smallestValueIndex]
     ) {
-      largestIndex = rightChildIndex;
+      smallestValueIndex = rightChild;
     }
 
-    if (largestIndex !== nodeIndex) {
-      [array[largestIndex], array[nodeIndex]] = [
-        array[nodeIndex],
-        array[largestIndex],
+    if (smallestValueIndex !== index) {
+      [this.array[index], this.array[smallestValueIndex]] = [
+        this.array[smallestValueIndex],
+        this.array[index],
       ];
-      this.heapify(array, largestIndex, heapSize);
+      this.heapify(smallestValueIndex);
     }
   }
 }
