@@ -25,7 +25,7 @@ class MinHeap {
   add(value: number) {
     this.array.push(value);
 
-    this.heapifyUp();
+    this.heapifyUp(this.array.length - 1);
 
     return this;
   }
@@ -42,24 +42,30 @@ class MinHeap {
 
     const minValue = this.array.pop()!;
 
-    this.heapifyDown();
+    this.heapifyDown(0);
 
     return minValue;
   }
 
-  private heapifyUp() {
-    for (let i = Math.floor(this.array.length / 2) - 1; i >= 0; i--) {
-      this.heapify(i);
+  private heapifyUp(index: number) {
+    let currentIndex = index;
+    while (
+      currentIndex > 0 &&
+      this.array[currentIndex] < this.array[Math.floor((currentIndex - 1) / 2)]
+    ) {
+      [
+        this.array[currentIndex],
+        this.array[Math.floor((currentIndex - 1) / 2)],
+      ] = [
+        this.array[Math.floor((currentIndex - 1) / 2)],
+        this.array[currentIndex],
+      ];
+
+      currentIndex = Math.floor((currentIndex - 1) / 2);
     }
   }
 
-  private heapifyDown() {
-    for (let i = Math.floor(this.array.length / 2) - 1; i >= 0; i--) {
-      this.heapify(i);
-    }
-  }
-
-  private heapify(index: number) {
+  private heapifyDown(index: number) {
     const leftChild = 2 * index + 1;
     const rightChild = 2 * index + 2;
     let smallestValueIndex = index;
@@ -83,7 +89,7 @@ class MinHeap {
         this.array[smallestValueIndex],
         this.array[index],
       ];
-      this.heapify(smallestValueIndex);
+      this.heapifyDown(smallestValueIndex);
     }
   }
 }
