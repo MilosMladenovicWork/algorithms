@@ -1,49 +1,54 @@
 class AvlTree {
-  root: AvlTreeNode | null = null;
+  root: AvlTreeNode | null;
+  constructor() {
+    this.root = null;
+  }
 
   insert(value: number) {
     this.root = this.insertNode(this.root, value);
+
+    return this;
   }
 
-  private insertNode(tree: AvlTreeNode | null, value: number) {
-    if (tree === null) {
+  private insertNode(node: AvlTreeNode | null, value: number) {
+    if (node === null) {
       return new AvlTreeNode(value);
     }
 
-    if (tree.value > value) {
-      tree.left = this.insertNode(tree.left, value);
-    } else if (tree.value < value) {
-      tree.right = this.insertNode(tree.right, value);
+    if (node.value > value) {
+      node.left = this.insertNode(node.left, value);
+    } else if (node.value < value) {
+      node.right = this.insertNode(node.right, value);
     } else {
-      return tree;
+      return node;
     }
 
-    tree.height =
-      1 + Math.max(this.getHeight(tree.left), this.getHeight(tree.right));
+    node.height =
+      1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
 
-    const balanceFactor = this.getBalanceFactor(tree);
+    const balanceFactor = this.getBalanceFactor(node);
 
     if (balanceFactor > 1) {
-      if (value < tree.left!.value) {
-        return this.rotateRight(tree);
+      if (node.left!.value > value) {
+        return this.rotateRight(node);
       } else {
-        tree.left = this.rotateLeft(tree.left!);
-        return this.rotateRight(tree);
+        node.left = this.rotateLeft(node.left!);
+        return this.rotateRight(node);
       }
     } else if (balanceFactor < -1) {
-      if (value > tree.right!.value!) {
-        return this.rotateLeft(tree);
+      if (node.right!.value < value) {
+        return this.rotateLeft(node);
       } else {
-        tree.right = this.rotateRight(tree.right!);
-        return this.rotateLeft(tree);
+        node.right = this.rotateRight(node.right!);
+        return this.rotateLeft(node);
       }
     }
 
-    return tree;
+    return node;
   }
 
   private getHeight(node: AvlTreeNode | null) {
-    return node?.height ?? 0;
+    return node ? node.height : 0;
   }
 
   private getBalanceFactor(node: AvlTreeNode) {
@@ -54,8 +59,8 @@ class AvlTree {
     const rightNode = node.right!;
     const rightLeftNode = rightNode.left;
 
-    rightNode.left = node;
     node.right = rightLeftNode;
+    rightNode.left = node;
 
     rightNode.height =
       1 +
@@ -70,8 +75,8 @@ class AvlTree {
     const leftNode = node.left!;
     const leftRightNode = leftNode.right;
 
-    leftNode.right = node;
     node.left = leftRightNode;
+    leftNode.right = node;
 
     leftNode.height =
       1 +
@@ -85,12 +90,15 @@ class AvlTree {
 
 class AvlTreeNode {
   value: number;
-  left: AvlTreeNode | null = null;
-  right: AvlTreeNode | null = null;
-  height: number = 1;
+  left: AvlTreeNode | null;
+  right: AvlTreeNode | null;
+  height: number;
 
   constructor(value: number) {
     this.value = value;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
   }
 }
 
