@@ -1,63 +1,80 @@
 class Stack {
-  private list: LinkedList;
+  size: number;
+  linkedList: LinkedList;
 
   constructor() {
-    this.list = new LinkedList();
+    this.linkedList = new LinkedList();
+    this.size = 0;
   }
 
   push(value: any) {
-    return this.list.addToHead(value);
+    this.linkedList.appendToHead(value);
+
+    return this;
   }
 
   pop() {
-    return this.list.removeFromHead();
+    if (this.linkedList.isEmpty()) {
+      throw new Error("Stack is empty");
+    }
+
+    const removedNode = this.linkedList.removeFromHead();
+
+    return removedNode ? removedNode.data : removedNode;
   }
 
   peek() {
-    return this.list.getHead();
+    const node = this.linkedList.getHead();
+
+    return node ? node.data : node;
+  }
+
+  isEmpty() {
+    return this.size === 0;
   }
 }
 
 class LinkedList {
   head: LinkedListNode | null;
-
+  size: number;
   constructor() {
     this.head = null;
+    this.size = 0;
   }
 
-  addToHead(data: any) {
-    const node = new LinkedListNode(data);
+  isEmpty() {
+    return this.size === 0;
+  }
 
-    const head = this.head;
+  appendToHead(value: any) {
+    const node = new LinkedListNode(value);
 
-    if (!this.head) {
-      this.head = node;
-    }
-
-    node.next = head;
+    node.next = this.head;
 
     this.head = node;
+
+    this.size++;
 
     return this;
   }
 
   removeFromHead() {
-    const head = this.head;
-
-    if (!head) {
-      return head;
+    if (this.isEmpty()) {
+      throw new Error("Linked list empty");
     }
 
-    this.head = head.next;
+    const removedNode = this.head;
 
-    return head.data;
+    if (this.head) {
+      this.head = this.head.next;
+    }
+
+    this.size--;
+
+    return removedNode;
   }
 
   getHead() {
-    if (this.head) {
-      return this.head.data;
-    }
-
     return this.head;
   }
 }
