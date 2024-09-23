@@ -1,46 +1,62 @@
 class LeastRecentlyUsedCache {
+  doublyLinkedList: DoublyLinkedList;
   capacity: number;
-  currentCapacity: number = 0;
-  hashmap: any = {};
-  doublyLinkedList = new DoublyLinkedList();
+  currentCapacity: number;
+  hashMap: Record<any, any> = {};
 
   constructor(capacity: number) {
     this.capacity = capacity;
+    this.currentCapacity = 0;
+    this.doublyLinkedList = new DoublyLinkedList();
   }
 
-  set(key: string, value: any) {
-    if (this.hashmap[key]) {
-      this.doublyLinkedList.remove(this.hashmap[key]);
-      const doublyLinkedListNode = this.doublyLinkedList.addToTail(key, value);
-      this.hashmap[key] = doublyLinkedListNode;
-    } else {
-      const doublyLinkedListNode = this.doublyLinkedList.addToTail(key, value);
-      this.hashmap[key] = doublyLinkedListNode;
-      this.currentCapacity++;
+  get(key: any) {
+    if (!this.hashMap.hasOwnProperty(key)) {
+      return undefined;
     }
 
-    if (this.currentCapacity > this.capacity) {
-      this.doublyLinkedList.removeHead();
-      this.currentCapacity--;
+    const node = this.hashMap[key];
+
+    this.doublyLinkedList.remove(node);
+
+    const newNode = this.doublyLinkedList.addToTail(node.key, node.data);
+
+    this.hashMap[key] = newNode;
+
+    return this.hashMap[key];
+  }
+
+  set(key: any, value: any) {
+    if (this.hashMap.hasOwnProperty(key)) {
+      const node = this.hashMap[key];
+
+      node.value = value;
+
+      this.doublyLinkedList.remove(node);
+
+      const newNode = this.doublyLinkedList.addToTail(node.key, node.value);
+
+      this.hashMap[key] = newNode;
+
+      return this;
     }
+
+    if (this.isFull()) {
+      this.doublyLinkedList.removeHead();
+      this.currentCapacity -= 1;
+    }
+
+    const node = this.doublyLinkedList.addToTail(key, value);
+
+    this.hashMap[key] = node;
+
+    this.currentCapacity += 1;
 
     return this;
   }
 
-  get(key: string) {
-    const node = this.hashmap[key];
-
-    if (node) {
-      const removedNode = this.doublyLinkedList.remove(node);
-      const newNode = this.doublyLinkedList.addToTail(
-        removedNode.key,
-        removedNode.data
-      );
-      this.hashmap[key] = newNode;
-      return newNode.data;
-    }
-
-    return undefined;
+  private isFull() {
+    return this.capacity === this.currentCapacity;
   }
 }
 
