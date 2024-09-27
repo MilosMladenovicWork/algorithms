@@ -14,37 +14,40 @@ class MinHeap {
   }
 
   removeMin() {
-    if (this.array.length === 0) {
+    if (this.isEmpty()) {
       return null;
     }
 
     this.swap(0, this.array.length - 1);
 
-    const minNode = this.array.pop();
+    const value = this.array.pop();
 
     this.heapifyDown(0);
 
-    return minNode;
+    return value;
   }
 
-  heapifyUp(index: number) {
+  isEmpty() {
+    return this.array.length === 0;
+  }
+
+  private heapifyUp(index: number) {
+    const parentNodeIndex = Math.floor((index - 1) / 2);
     let currentIndex = index;
 
-    const parentIndex = Math.floor((currentIndex - 1) / 2);
-
     while (
-      currentIndex > 0 &&
-      this.array[currentIndex] < this.array[parentIndex]
+      parentNodeIndex >= 0 &&
+      this.array[parentNodeIndex] > this.array[index]
     ) {
-      this.swap(currentIndex, parentIndex);
-      currentIndex = parentIndex;
+      this.swap(parentNodeIndex, index);
+      currentIndex = parentNodeIndex;
     }
   }
 
-  heapifyDown(index: number) {
+  private heapifyDown(index: number) {
+    const leftChildIndex = index * 2 + 1;
+    const rightChildIndex = index * 2 + 2;
     let leastValueIndex = index;
-    let leftChildIndex = 2 * leastValueIndex + 1;
-    let rightChildIndex = 2 * leastValueIndex + 2;
 
     if (
       leftChildIndex < this.array.length &&
@@ -52,7 +55,6 @@ class MinHeap {
     ) {
       leastValueIndex = leftChildIndex;
     }
-
     if (
       rightChildIndex < this.array.length &&
       this.array[leastValueIndex] > this.array[rightChildIndex]
@@ -66,7 +68,7 @@ class MinHeap {
     }
   }
 
-  swap(index1: number, index2: number) {
+  private swap(index1: number, index2: number) {
     [this.array[index1], this.array[index2]] = [
       this.array[index2],
       this.array[index1],
