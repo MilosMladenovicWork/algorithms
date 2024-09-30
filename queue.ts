@@ -1,90 +1,78 @@
 class Queue {
-  list: QueueLinkedList;
-
+  linkedList: LinkedList;
   constructor() {
-    this.list = new QueueLinkedList();
+    this.linkedList = new LinkedList();
   }
 
-  enqueue(value: any) {
-    this.list.addToTail(value);
-
+  enqueue(value: number) {
+    this.linkedList.addToTail(value);
     return this;
   }
 
   dequeue() {
-    return this.list.removeFromHead();
+    return this.linkedList.removeFromHead();
   }
 
   printQueue() {
-    this.list.traverse((node) => console.log(node.data));
+    this.linkedList.traverse((node) => {
+      console.log(node.data);
+    });
   }
 }
 
-class QueueLinkedList {
-  head: QueueLinkedListNode | null;
-  tail: QueueLinkedListNode | null;
-
+class LinkedList {
+  head: LinkedListNode | null;
+  tail: LinkedListNode | null;
   constructor() {
     this.head = null;
     this.tail = null;
   }
 
-  addToTail(data: any) {
-    const node = new QueueLinkedListNode(data);
-
-    if (this.tail) {
-      this.tail.next = node;
-    }
-
-    this.tail = node;
-
-    if (!this.head) {
+  addToTail(value: number) {
+    const node = new LinkedListNode(value);
+    if (!this.head || !this.tail) {
       this.head = node;
+      this.tail = node;
+    } else {
+      this.tail.next = node;
+      this.tail = node;
     }
 
     return this;
   }
 
   removeFromHead() {
-    const head = this.head;
-    const tail = this.tail;
-
-    if (!head) {
-      return head;
+    if (!this.head) {
+      return this.head;
     }
 
-    this.head = head.next;
+    const node = this.head;
 
-    if (head === tail) {
+    if (this.head === this.tail) {
+      this.head = null;
       this.tail = null;
+    } else {
+      this.head = node.next;
     }
 
-    return head.data;
+    return node;
   }
 
-  getHead() {
-    if (this.head) {
-      return this.head.data;
-    }
-
-    return this.head;
-  }
-
-  traverse(callback: (node: QueueLinkedListNode) => void) {
+  traverse(callback: (node: LinkedListNode) => void) {
     let currentNode = this.head;
 
-    while (currentNode) {
+    while (currentNode !== null) {
       callback(currentNode);
       currentNode = currentNode.next;
     }
   }
 }
 
-class QueueLinkedListNode {
-  data: any;
-  next: QueueLinkedListNode | null;
+class LinkedListNode {
+  data: number;
+  next: LinkedListNode | null;
 
-  constructor(data: any) {
+  constructor(data: number) {
     this.data = data;
     this.next = null;
   }
