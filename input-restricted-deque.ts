@@ -1,125 +1,108 @@
 class InputRestrictedDeque {
-  doublyLinkedList: DoublyLinkedList;
-
+  list: DoublyLinkedList;
   constructor() {
-    this.doublyLinkedList = new DoublyLinkedList();
+    this.list = new DoublyLinkedList();
   }
 
-  enqueueAtEnd(value: any) {
-    this.doublyLinkedList.addToTail(value);
-
+  enqueueAtEnd(value: number) {
+    this.list.addToTail(value);
     return this;
   }
 
   dequeueFromStart() {
-    if (this.doublyLinkedList.isEmpty()) {
-      throw new Error("Deque is empty");
+    const node = this.list.removeFromHead();
+
+    if (!node) {
+      return null;
     }
 
-    const removedNode = this.doublyLinkedList.removeFromHead()!;
-
-    return removedNode.data;
+    return node.data;
   }
 
   dequeueFromEnd() {
-    if (this.doublyLinkedList.isEmpty()) {
-      throw new Error("Deque is empty");
+    const node = this.list.removeFromTail();
+
+    if (!node) {
+      return null;
     }
 
-    const removedNode = this.doublyLinkedList.removeFromTail()!;
-
-    return removedNode.data;
-  }
-
-  isEmpty() {
-    return this.doublyLinkedList.isEmpty();
+    return node.data;
   }
 }
 
 class DoublyLinkedList {
   head: DoublyLinkedListNode | null;
   tail: DoublyLinkedListNode | null;
-  size: number;
 
   constructor() {
     this.head = null;
     this.tail = null;
-    this.size = 0;
   }
 
-  addToTail(value: any) {
+  addToTail(value: number) {
     const node = new DoublyLinkedListNode(value);
 
-    if (this.tail) {
-      this.tail.next = node;
-      node.prev = this.tail;
-      this.tail = node;
-    } else {
+    if (!this.head || !this.tail) {
       this.head = node;
       this.tail = node;
     }
 
-    this.size++;
+    const tailNode = this.tail;
+
+    tailNode.next = node;
+    node.prev = tailNode;
+
+    this.tail = node;
 
     return this;
   }
 
   removeFromHead() {
-    if (this.isEmpty()) {
-      throw new Error("Doubly linked list empty");
+    if (!this.head || !this.tail) {
+      return null;
     }
 
-    const node = this.head;
+    const headNode = this.head;
 
     if (this.head === this.tail) {
       this.head = null;
       this.tail = null;
     } else {
-      this.head!.next!.prev = null;
-
-      this.head = this.head!.next;
+      this.head = headNode.next!;
+      this.head.prev = null;
     }
 
-    this.size--;
-
-    return node;
+    return headNode;
   }
 
   removeFromTail() {
-    if (this.isEmpty()) {
-      throw new Error("Doubly linked list empty");
+    if (!this.head || !this.tail) {
+      return null;
     }
 
-    const node = this.tail;
+    const tailNode = this.tail;
 
     if (this.head === this.tail) {
       this.head = null;
       this.tail = null;
     } else {
-      this.tail!.prev!.next = null;
-
-      this.tail = this.tail!.prev;
+      this.tail = tailNode.prev!;
+      this.tail.next = null;
     }
 
-    this.size--;
-
-    return node;
-  }
-
-  isEmpty() {
-    return this.size === 0;
+    return tailNode;
   }
 }
 
 class DoublyLinkedListNode {
-  data: any;
+  data: number;
   prev: DoublyLinkedListNode | null;
   next: DoublyLinkedListNode | null;
 
-  constructor(data: any) {
-    this.data = data;
-    this.next = null;
+  constructor(data: number) {
     this.prev = null;
+    this.next = null;
+    this.data = data;
   }
 }
 
