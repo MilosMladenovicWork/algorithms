@@ -7,35 +7,34 @@ const graph = {
 
 const graphBreadthFirstSearch = (
   graph: { [key: number]: number[] },
-  startNode: number,
-  searchedNode: number
+  startVertex: number,
+  searchedVertex: number
 ) => {
-  if (!graph[startNode]) {
-    return;
-  }
-
-  if (startNode === searchedNode) {
-    return graph[startNode];
-  }
-
-  const queue = [startNode];
   const visited: { [key: number]: boolean } = {};
 
-  while (queue.length > 0) {
-    const node = queue.shift()!;
-
-    if (visited[node]) {
-      continue;
-    }
-    console.log(node);
-
-    if (node === searchedNode) {
-      return graph[searchedNode];
-    }
-
-    queue.push(...graph[node]);
-    visited[node] = true;
+  if (!graph[startVertex]) {
+    return null;
   }
+
+  const queue: number[] = [startVertex];
+  visited[startVertex] = true;
+
+  while (queue.length > 0) {
+    const vertex = queue.shift()!;
+
+    if (vertex === searchedVertex) {
+      return graph[vertex];
+    }
+
+    for (let connectedVertex of graph[vertex]) {
+      if (!visited[connectedVertex]) {
+        queue.push(connectedVertex);
+        visited[connectedVertex] = true;
+      }
+    }
+  }
+
+  return null;
 };
 
 console.log(graphBreadthFirstSearch(graph, 1, 4));
