@@ -1,76 +1,64 @@
 class FlowNetwork {
-  network: number[][];
-  numberOfVertices: number;
+  flowNetwork: number[][];
 
   constructor(numberOfVertices: number) {
-    this.numberOfVertices = numberOfVertices;
-    this.network = Array.from({ length: numberOfVertices }, () =>
-      Array(numberOfVertices).fill(0)
+    this.flowNetwork = Array.from({ length: numberOfVertices }, () =>
+      new Array(numberOfVertices).fill(0)
     );
   }
 
-  addEdge(vertexFrom: number, vertexTo: number, capacity: number) {
-    this.network[vertexFrom][vertexTo] = capacity;
+  addEdge(vertex1: number, vertex2: number, capacity: number) {
+    this.flowNetwork[vertex1][vertex2] = capacity;
   }
 
-  computeMaxFlow(sourceVertex: number, sinkVertex: number) {
+  computeMaxFlow(fromVertex: number, toVertex: number) {
+    const augmentingPath = new Array(this.flowNetwork.length).fill(-1);
     let maxFlow = 0;
-    let augmentingPath = Array(this.numberOfVertices).fill(-1);
-    // find augmenting path
-    while (this.findAugmentingPath(sourceVertex, sinkVertex, augmentingPath)) {
-      // find min flow
-      let minPathFlow = Infinity;
 
-      for (let i = sinkVertex; i !== sourceVertex; i = augmentingPath[i]) {
+    while (this.findAugmentingPath(fromVertex, toVertex, augmentingPath)) {
+      let pathFlow = Infinity;
+
+      for (let i = toVertex; i !== fromVertex; i = augmentingPath[i]) {
         const previousVertex = augmentingPath[i];
-        minPathFlow = Math.min(minPathFlow, this.network[previousVertex][i]);
+        pathFlow = Math.min(pathFlow, this.flowNetwork[previousVertex][i]);
       }
 
-      // update capacities in network with min flow
-      for (let i = sinkVertex; i !== sourceVertex; i = augmentingPath[i]) {
+      for (let i = toVertex; i !== fromVertex; i = augmentingPath[i]) {
         const previousVertex = augmentingPath[i];
-        this.network[previousVertex][i] -= minPathFlow;
-        this.network[i][previousVertex] += minPathFlow;
+        this.flowNetwork[previousVertex][i] -= pathFlow;
+        this.flowNetwork[i][previousVertex] += pathFlow;
       }
 
-      // add min flow to max flow
-      maxFlow += minPathFlow;
+      maxFlow += pathFlow;
     }
-    // return max flow
+
     return maxFlow;
   }
 
   private findAugmentingPath(
-    sourceVertex: number,
-    sinkVertex: number,
+    fromVertex: number,
+    toVertex: number,
     augmentingPath: number[]
   ) {
-    augmentingPath[sourceVertex] = -1;
+    augmentingPath[fromVertex] = -1;
     const visited: { [key: number]: boolean } = {};
 
-    const queue: number[] = [sourceVertex];
-    visited[sourceVertex] = true;
+    const queue: number[] = [fromVertex];
+    visited[fromVertex] = true;
 
     while (queue.length > 0) {
       const visitedVertex = queue.shift()!;
 
-      for (
-        let nextVertex = 0;
-        nextVertex < this.numberOfVertices;
-        nextVertex++
-      ) {
-        if (
-          this.network[visitedVertex][nextVertex] > 0 &&
-          !visited[nextVertex]
-        ) {
-          visited[nextVertex] = true;
-          augmentingPath[nextVertex] = visitedVertex;
-          queue.push(nextVertex);
+      for (let vertex = 0; vertex < this.flowNetwork.length; vertex++) {
+        if (!visited[vertex] && this.flowNetwork[visitedVertex][vertex] > 0) {
+          augmentingPath[vertex] = visitedVertex;
+          queue.push(vertex);
+          visited[vertex] = true;
         }
       }
     }
 
-    return visited[sinkVertex];
+    return visited[toVertex];
   }
 }
 
