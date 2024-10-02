@@ -1,60 +1,28 @@
-// function findLargestCommonSequence(a: any[], b: any[]) {
-//   const dpTable = Array.from({ length: a.length + 1 }, () =>
-//     Array(b.length + 1).fill(0)
-//   );
+const findLargestCommonSequence = (
+  sequences: {
+    sequence1: string[];
+    sequence2: string[];
+    expected_lcs: string[];
+  }[]
+) => {
+  const results: string[] = [];
 
-//   for (let i = 0; i < a.length; i++) {
-//     for (let j = 0; j < b.length; j++) {
-//       if (a[i] === b[j]) {
-//         dpTable[i + 1][j + 1] = dpTable[i][j] + 1;
-//       } else {
-//         dpTable[i + 1][j + 1] = Math.max(dpTable[i][j + 1], dpTable[i + 1][j]);
-//       }
-//     }
-//   }
-
-//   console.log(dpTable[1]);
-//   console.log(dpTable[2]);
-//   console.log(dpTable[3]);
-
-//   let sequence: number[] = [];
-
-//   let maxJ = b.length;
-
-//   for (let i = a.length; i > 0; i--) {
-//     for (maxJ; maxJ > 0 && i > 0; maxJ--) {
-//       if (dpTable[i][maxJ] > dpTable[i - 1][maxJ - 1]) {
-//         sequence.unshift(b[maxJ - 1]);
-//         i--;
-//       }
-//     }
-//   }
-
-//   return sequence;
-// }
-
-const findLargestCommonSequence = (sequences: { [key: string]: any }[]) => {
-  const results: number[][] = [];
-
-  for (const { sequence1, sequence2 } of sequences) {
+  sequences.forEach(({ sequence1, sequence2 }) => {
     const dpTable = Array.from({ length: sequence2.length + 1 }, () =>
-      Array(sequence1.length + 1).fill(0)
+      new Array(sequence1.length + 1).fill(0)
     );
 
-    for (let i = 0; i < sequence2.length; i++) {
-      for (let j = 0; j < sequence1.length; j++) {
-        if (sequence2[i] === sequence1[j]) {
-          dpTable[i + 1][j + 1] = dpTable[i][j] + 1;
+    for (let i = 1; i <= sequence2.length; i++) {
+      for (let j = 1; j <= sequence1.length; j++) {
+        if (sequence2[i - 1] === sequence1[j - 1]) {
+          dpTable[i][j] = dpTable[i - 1][j - 1] + 1;
         } else {
-          dpTable[i + 1][j + 1] = Math.max(
-            dpTable[i + 1][j],
-            dpTable[i][j + 1]
-          );
+          dpTable[i][j] = Math.max(dpTable[i - 1][j], dpTable[i][j - 1]);
         }
       }
     }
 
-    let sequence: number[] = [];
+    const longestCommonSequence: string[] = [];
 
     let i = sequence2.length;
     let j = sequence1.length;
@@ -65,18 +33,16 @@ const findLargestCommonSequence = (sequences: { [key: string]: any }[]) => {
       } else if (dpTable[i][j] === dpTable[i][j - 1]) {
         j--;
       } else if (dpTable[i][j] > dpTable[i - 1][j - 1]) {
-        sequence.unshift(sequence2[i - 1]);
+        longestCommonSequence.unshift(sequence2[i - 1]);
         i--;
         j--;
       }
     }
 
-    console.log(dpTable);
+    console.log(longestCommonSequence);
 
-    results.push(sequence);
-  }
-
-  return results;
+    return longestCommonSequence;
+  });
 };
 
 const sequence = findLargestCommonSequence([
@@ -128,7 +94,7 @@ const sequence = findLargestCommonSequence([
   {
     sequence1: ["a", "c", "d", "b"],
     sequence2: ["c", "d", "a", "b"],
-    expected_lcs: ["c", "d"],
+    expected_lcs: ["c", "d", "b"],
   },
 ]);
 
