@@ -27,29 +27,24 @@ rootNode.children = [node1, node2];
 node1.children = [node3];
 node3.children = [node4];
 
-const tree = new Tree(rootNode);
+const bfsTree = new Tree(rootNode);
 
 const treeBreadthFirstSearch = (tree: Tree, key: string) => {
-  const rootNode = tree.root;
+  const queue = [tree.root];
 
-  if (!rootNode) {
-    return;
-  }
-
-  const nodesQueue: TreeNode[] = [rootNode];
-
-  while (nodesQueue.length > 0) {
-    const node = nodesQueue.shift()!;
-    console.log(node.key);
+  while (queue.length > 0) {
+    const node = queue.shift()!;
 
     if (node.key === key) {
       return node.data;
     }
 
-    nodesQueue.push(...node.children);
+    for (const nodeChild of node.children) {
+      queue.push(nodeChild);
+    }
   }
 
-  return;
+  return null;
 };
 
-console.log(treeBreadthFirstSearch(tree, "5"));
+console.log(treeBreadthFirstSearch(bfsTree, "5"));
