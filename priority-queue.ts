@@ -7,11 +7,18 @@ class PriorityQueue {
 
   enqueue(value: number) {
     this.minHeap.add(value);
+
     return this;
   }
 
   dequeue() {
-    return this.minHeap.removeMin();
+    const node = this.minHeap.removeMin();
+
+    if (!node) {
+      return null;
+    }
+
+    return node;
   }
 }
 
@@ -31,66 +38,58 @@ class MinHeap {
   }
 
   removeMin() {
-    if (this.array.length === 0) {
-      return null;
-    }
-
-    [this.array[0], this.array[this.array.length - 1]] = [
-      this.array[this.array.length - 1],
-      this.array[0],
-    ];
-
-    const minValue = this.array.pop()!;
+    this.swap(0, this.array.length - 1);
+    const value = this.array.pop();
 
     this.heapifyDown(0);
 
-    return minValue;
+    return value;
   }
 
   private heapifyUp(index: number) {
     let currentIndex = index;
+    let parentIndex = Math.floor((currentIndex - 1) / 2);
+
     while (
       currentIndex > 0 &&
-      this.array[currentIndex] < this.array[Math.floor((currentIndex - 1) / 2)]
+      this.array[parentIndex] > this.array[currentIndex]
     ) {
-      [
-        this.array[currentIndex],
-        this.array[Math.floor((currentIndex - 1) / 2)],
-      ] = [
-        this.array[Math.floor((currentIndex - 1) / 2)],
-        this.array[currentIndex],
-      ];
-
-      currentIndex = Math.floor((currentIndex - 1) / 2);
+      this.swap(parentIndex, currentIndex);
+      currentIndex = parentIndex;
+      parentIndex = Math.floor((parentIndex - 1) / 2);
     }
   }
 
   private heapifyDown(index: number) {
-    const leftChild = 2 * index + 1;
-    const rightChild = 2 * index + 2;
-    let smallestValueIndex = index;
+    let leastValueIndex = index;
+    const leftChildIndex = index * 2 + 1;
+    const rightChildIndex = index * 2 + 2;
 
     if (
-      leftChild < this.array.length &&
-      this.array[leftChild] < this.array[smallestValueIndex]
+      leftChildIndex < this.array.length &&
+      this.array[leastValueIndex] > this.array[leftChildIndex]
     ) {
-      smallestValueIndex = leftChild;
+      leastValueIndex = leftChildIndex;
     }
 
     if (
-      rightChild < this.array.length &&
-      this.array[rightChild] < this.array[smallestValueIndex]
+      rightChildIndex < this.array.length &&
+      this.array[leastValueIndex] > this.array[rightChildIndex]
     ) {
-      smallestValueIndex = rightChild;
+      leastValueIndex = leftChildIndex;
     }
 
-    if (smallestValueIndex !== index) {
-      [this.array[index], this.array[smallestValueIndex]] = [
-        this.array[smallestValueIndex],
-        this.array[index],
-      ];
-      this.heapifyDown(smallestValueIndex);
+    if (index !== leastValueIndex) {
+      this.swap(index, leastValueIndex);
+      this.heapifyDown(leastValueIndex);
     }
+  }
+
+  private swap(index1: number, index2: number) {
+    [this.array[index1], this.array[index2]] = [
+      this.array[index2],
+      this.array[index1],
+    ];
   }
 }
 
