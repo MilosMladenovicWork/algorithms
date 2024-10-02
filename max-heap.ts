@@ -20,17 +20,41 @@ class MaxHeap {
 
     this.swap(0, this.array.length - 1);
 
-    const maxNode = this.array.pop();
+    const value = this.array.pop()!;
 
     this.heapifyDown(0);
 
-    return maxNode;
+    return value;
   }
 
-  heapifyUp(index: number) {
-    let currentIndex = index;
+  private heapifyDown(index: number) {
+    let greatestValueIndex = index;
+    const leftChildIndex = greatestValueIndex * 2 + 1;
+    const rightChildIndex = greatestValueIndex * 2 + 1;
 
-    const parentIndex = Math.floor((currentIndex - 1) / 2);
+    if (
+      leftChildIndex < this.array.length &&
+      this.array[leftChildIndex] > this.array[greatestValueIndex]
+    ) {
+      greatestValueIndex = leftChildIndex;
+    }
+
+    if (
+      rightChildIndex < this.array.length &&
+      this.array[rightChildIndex] > this.array[greatestValueIndex]
+    ) {
+      greatestValueIndex = rightChildIndex;
+    }
+
+    if (greatestValueIndex !== index) {
+      this.swap(index, greatestValueIndex);
+      this.heapifyDown(greatestValueIndex);
+    }
+  }
+
+  private heapifyUp(index: number) {
+    let currentIndex = index;
+    let parentIndex = Math.floor((currentIndex - 1) / 2);
 
     while (
       currentIndex > 0 &&
@@ -38,35 +62,11 @@ class MaxHeap {
     ) {
       this.swap(currentIndex, parentIndex);
       currentIndex = parentIndex;
+      parentIndex = Math.floor((currentIndex - 1) / 2);
     }
   }
 
-  heapifyDown(index: number) {
-    let highestValueIndex = index;
-    let leftChildIndex = 2 * highestValueIndex + 1;
-    let rightChildIndex = 2 * highestValueIndex + 2;
-
-    if (
-      leftChildIndex < this.array.length &&
-      this.array[highestValueIndex] < this.array[leftChildIndex]
-    ) {
-      highestValueIndex = leftChildIndex;
-    }
-
-    if (
-      rightChildIndex < this.array.length &&
-      this.array[highestValueIndex] < this.array[rightChildIndex]
-    ) {
-      highestValueIndex = rightChildIndex;
-    }
-
-    if (highestValueIndex !== index) {
-      this.swap(index, highestValueIndex);
-      this.heapifyDown(highestValueIndex);
-    }
-  }
-
-  swap(index1: number, index2: number) {
+  private swap(index1: number, index2: number) {
     [this.array[index1], this.array[index2]] = [
       this.array[index2],
       this.array[index1],
