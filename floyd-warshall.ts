@@ -10,20 +10,22 @@ const calculateShortestPathBetweenAllPairsOfVertices = (
 ) => {
   const numberOfVertices = adjacencyMatrix.length;
 
-  const distanceMatrix = Array.from({length: numberOfVertices}, (_, i) => 
-    Array.from({length:numberOfVertices}, (_, j) => adjacencyMatrix[i][j])
-  )
+  const distanceMatrix = Array.from({ length: numberOfVertices }, (_, i) =>
+    Array.from({ length: numberOfVertices }, (_, j) => adjacencyMatrix[i][j])
+  );
 
-  for(let i = 0; i < numberOfVertices; i++){
-    for(let j = 0; j < numberOfVertices; j++){
-      for(let k = 0; k < numberOfVertices; k++){
-        if(distanceMatrix[i][j] > distanceMatrix[i][k] + distanceMatrix[k][j]){
-          distanceMatrix[i][j] = distanceMatrix[i][k] + distanceMatrix[k][j]
+  for (let i = 0; i < numberOfVertices; i++) {
+    for (let j = 0; j < numberOfVertices; j++) {
+      for (let k = 0; k < numberOfVertices; k++) {
+        if (
+          distanceMatrix[i][j] >
+          distanceMatrix[i][k] + distanceMatrix[k][j]
+        ) {
+          distanceMatrix[i][j] = distanceMatrix[i][k] + distanceMatrix[k][j];
         }
       }
     }
   }
-
   return distanceMatrix;
 };
 
