@@ -21,27 +21,30 @@ function preorderTreeTraversal(tree: any) {
   const stack = [tree];
 
   while (stack.length > 0) {
-    const node = stack.pop()!;
-    console.log(node.value);
+    const visitedNode = stack.pop();
 
-    if (node.right) {
-      stack.push(node.right);
+    console.log(visitedNode.value);
+
+    if (visitedNode.right) {
+      stack.push(visitedNode.right);
     }
 
-    if (node.left) {
-      stack.push(node.left);
+    if (visitedNode.left) {
+      stack.push(visitedNode.left);
     }
   }
 }
 
+// preorderTreeTraversal(tree);
+
 function inorderTreeTraversal(tree: any) {
-  const result: any[] = []
-  const stack: any[] = []
+  const result: any[] = [];
+  const stack: any[] = [];
   let currentNode = tree;
 
-  while(currentNode || stack.length > 0){
-    while(currentNode){
-      stack.push(currentNode)
+  while (currentNode || stack.length > 0) {
+    while (currentNode) {
+      stack.push(currentNode);
       currentNode = currentNode.left;
     }
 
@@ -49,7 +52,7 @@ function inorderTreeTraversal(tree: any) {
 
     result.push(node.value);
 
-    if(node.right){
+    if (node.right) {
       currentNode = node.right;
     }
   }
@@ -57,7 +60,7 @@ function inorderTreeTraversal(tree: any) {
   return result;
 }
 
-console.log(inorderTreeTraversal(tree))
+// console.log(inorderTreeTraversal(tree));
 
 function postorderTreeTraversal(tree: any) {
   const result: any[] = [];
@@ -65,8 +68,8 @@ function postorderTreeTraversal(tree: any) {
   let currentNode = tree;
   let previousNode = null;
 
-  while(currentNode || stack.length > 0){
-    while(currentNode){
+  while (currentNode || stack.length > 0) {
+    while (currentNode) {
       stack.push(currentNode);
 
       currentNode = currentNode.left;
@@ -74,11 +77,11 @@ function postorderTreeTraversal(tree: any) {
 
     let peekedNode = stack[stack.length - 1];
 
-    if(peekedNode.right && previousNode !== peekedNode.right){
+    if (peekedNode.right && previousNode !== peekedNode.right) {
       currentNode = peekedNode.right;
-    }else{
+    } else {
       const node = stack.pop()!;
-      
+
       previousNode = node;
 
       result.push(node.value);
