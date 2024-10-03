@@ -1,88 +1,79 @@
 class Stack {
-  size: number;
-  linkedList: LinkedList;
-
+  singlyLinkedList: SinglyLinkedList;
   constructor() {
-    this.linkedList = new LinkedList();
-    this.size = 0;
+    this.singlyLinkedList = new SinglyLinkedList();
   }
 
   push(value: any) {
-    this.linkedList.appendToHead(value);
+    this.singlyLinkedList.addToHead(value);
 
     return this;
   }
 
   pop() {
-    if (this.linkedList.isEmpty()) {
-      throw new Error("Stack is empty");
+    const node = this.singlyLinkedList.removeFromHead();
+
+    if (!node) {
+      return node;
     }
 
-    const removedNode = this.linkedList.removeFromHead();
-
-    return removedNode ? removedNode.data : removedNode;
+    return node.data;
   }
 
   peek() {
-    const node = this.linkedList.getHead();
+    const node = this.singlyLinkedList.getHead();
 
-    return node ? node.data : node;
-  }
+    if (!node) {
+      return node;
+    }
 
-  isEmpty() {
-    return this.size === 0;
+    return node.data;
   }
 }
 
-class LinkedList {
-  head: LinkedListNode | null;
-  size: number;
+class SinglyLinkedList {
+  head: SinglyLinkedListNode | null;
   constructor() {
     this.head = null;
-    this.size = 0;
   }
 
-  isEmpty() {
-    return this.size === 0;
-  }
+  addToHead(value: any) {
+    const node = new SinglyLinkedListNode(value);
 
-  appendToHead(value: any) {
-    const node = new LinkedListNode(value);
-
-    node.next = this.head;
-
-    this.head = node;
-
-    this.size++;
+    if (!this.head) {
+      this.head = node;
+    } else {
+      node.next = this.head;
+      this.head = node;
+    }
 
     return this;
   }
 
   removeFromHead() {
     if (this.isEmpty()) {
-      throw new Error("Linked list empty");
+      return;
     }
 
-    const removedNode = this.head;
+    const node = this.head!;
 
-    if (this.head) {
-      this.head = this.head.next;
-    }
+    this.head = node.next;
 
-    this.size--;
-
-    return removedNode;
+    return node;
   }
 
   getHead() {
     return this.head;
   }
+
+  isEmpty() {
+    return !this.head;
+  }
 }
 
-class LinkedListNode {
+class SinglyLinkedListNode {
   data: any;
-  next: LinkedListNode | null;
-
+  next: SinglyLinkedListNode | null;
   constructor(data: any) {
     this.data = data;
     this.next = null;
