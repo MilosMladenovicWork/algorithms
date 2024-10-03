@@ -1,100 +1,103 @@
 class CircularStaticArray {
   capacity: number;
-  startPointer: number;
-  endPointer: number;
-  size: number;
-  array: any[];
+  array: (number | undefined)[];
+  startIndex: number;
+  endIndex: number;
+  numberOfElements: number;
 
   constructor(capacity: number) {
+    if (capacity < 1) {
+      throw Error("Capacity must be greater than 0");
+    }
     this.capacity = capacity;
-    this.startPointer = 0;
-    this.endPointer = 1;
-    this.size = 0;
     this.array = new Array(capacity);
+    this.startIndex = 0;
+    this.endIndex = capacity === 1 ? 0 : 1;
+    this.numberOfElements = 0;
   }
 
-  push(value: any) {
+  push(value: number) {
     if (this.isFull()) {
-      throw new Error("Array full");
+      throw Error("Array full");
     }
 
-    this.array[this.endPointer] = value;
+    this.array[this.endIndex] = value;
 
-    this.endPointer = this.getNextEndPointer();
+    this.endIndex = this.getNextEndIndex();
 
-    this.size++;
+    this.numberOfElements += 1;
+
+    return this;
+  }
+
+  unshift(value: number) {
+    if (this.isFull()) {
+      throw Error("Array full");
+    }
+
+    this.array[this.startIndex] = value;
+
+    this.startIndex = this.getNextStartIndex();
+
+    this.numberOfElements += 1;
 
     return this;
   }
 
   pop() {
     if (this.isEmpty()) {
-      throw new Error("Array empty");
+      return;
     }
 
-    this.endPointer = this.getPrevEndPointer();
+    this.endIndex = this.getPrevEndIndex();
 
-    const removedValue = this.array[this.endPointer];
+    const value = this.array[this.endIndex];
 
-    this.array[this.endPointer] = undefined;
+    this.array[this.endIndex] = undefined;
 
-    this.size--;
+    this.numberOfElements -= 1;
 
-    return removedValue;
-  }
-
-  unshift(value: any) {
-    if (this.isFull()) {
-      throw new Error("Array full");
-    }
-
-    this.array[this.startPointer] = value;
-
-    this.startPointer = this.getNextStartPointer();
-
-    this.size++;
-
-    return this;
+    return value;
   }
 
   shift() {
     if (this.isEmpty()) {
-      throw new Error("Array empty");
+      return;
     }
 
-    this.startPointer = this.getPrevStartPointer();
+    this.startIndex = this.getPrevStartIndex();
 
-    const removedValue = this.array[this.startPointer];
+    const value = this.array[this.startIndex];
 
-    this.array[this.startPointer] = undefined;
+    this.array[this.startIndex] = undefined;
 
-    this.size--;
+    this.numberOfElements -= 1;
 
-    return removedValue;
-  }
-
-  private getNextStartPointer() {
-    return (this.startPointer - 1 + this.capacity) % this.capacity;
-  }
-
-  private getPrevStartPointer() {
-    return (this.startPointer + 1) % this.capacity;
-  }
-
-  private getNextEndPointer() {
-    return (this.endPointer + 1) % this.capacity;
-  }
-
-  private getPrevEndPointer() {
-    return (this.endPointer - 1 + this.capacity) % this.capacity;
-  }
-
-  private isFull() {
-    return this.capacity === this.size;
+    return value;
   }
 
   private isEmpty() {
-    return this.size === 0;
+    return this.numberOfElements === 0;
+  }
+
+  private isFull() {
+    return this.numberOfElements === this.capacity;
+  }
+
+  private getNextEndIndex() {
+    return (this.endIndex + 1) % this.capacity;
+  }
+
+  private getNextStartIndex() {
+    return (this.startIndex - 1 + this.capacity) % this.capacity;
+  }
+
+  private getPrevEndIndex() {
+    return (this.endIndex - 1 + this.capacity) % this.capacity;
+  }
+
+  private getPrevStartIndex() {
+    return (this.startIndex + 1) % this.capacity;
   }
 }
 
