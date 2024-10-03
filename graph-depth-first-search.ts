@@ -7,31 +7,34 @@ const graph = {
 };
 
 function graphDepthFirstSearch(
-  graph: any,
-  node: number,
-  searchedForNode: number
+  graph: { [key: number]: number[] },
+  fromVertex: number,
+  vertexToFind: number
 ) {
-  const visited: { [key: number]: boolean } = {};
-
-  if (!graph[node]) {
-    return;
+  if (!graph[fromVertex]) {
+    return null;
   }
 
-  const verticesToVisit: number[] = [node];
-  visited[node] = true;
+  const visited: { [key: number]: boolean } = {};
 
-  while (verticesToVisit.length > 0) {
-    const vertex = verticesToVisit.pop()!;
+  const toVisitVertices = [fromVertex];
+
+  visited[fromVertex] = true;
+
+  while (toVisitVertices.length > 0) {
+    const vertex = toVisitVertices.pop()!;
+
     console.log(vertex);
 
-    if (vertex === searchedForNode) {
+    if (vertex === vertexToFind) {
       return graph[vertex];
     }
 
     for (let i = graph[vertex].length - 1; i >= 0; i--) {
-      if (!visited[graph[vertex][i]]) {
-        verticesToVisit.push(graph[vertex][i]);
-        visited[graph[vertex][i]] = true;
+      const relatedVertex = graph[vertex][i];
+      if (!visited[relatedVertex]) {
+        toVisitVertices.push(relatedVertex);
+        visited[relatedVertex] = true;
       }
     }
   }
