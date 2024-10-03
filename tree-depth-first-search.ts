@@ -39,18 +39,18 @@ function preorderTreeTraversal(tree: any) {
 
 function inorderTreeTraversal(tree: any) {
   const result: any[] = [];
-  const stack: any[] = [];
   let currentNode = tree;
+  let nodesToVisit: any[] = [];
 
-  while (currentNode || stack.length > 0) {
+  while (nodesToVisit.length > 0 || currentNode) {
     while (currentNode) {
-      stack.push(currentNode);
+      nodesToVisit.push(currentNode);
       currentNode = currentNode.left;
     }
 
-    const node = stack.pop()!;
+    const node = nodesToVisit.pop()!;
 
-    result.push(node.value);
+    result.push(node);
 
     if (node.right) {
       currentNode = node.right;
@@ -64,34 +64,33 @@ function inorderTreeTraversal(tree: any) {
 
 function postorderTreeTraversal(tree: any) {
   const result: any[] = [];
-  const stack: any[] = [];
+  const visitedNodes: any[] = [];
   let currentNode = tree;
   let previousNode = null;
 
-  while (currentNode || stack.length > 0) {
+  while (visitedNodes.length > 0 || currentNode) {
     while (currentNode) {
-      stack.push(currentNode);
-
+      visitedNodes.push(currentNode);
       currentNode = currentNode.left;
     }
 
-    let peekedNode = stack[stack.length - 1];
+    const peekedNode = visitedNodes[visitedNodes.length - 1];
 
     if (peekedNode.right && previousNode !== peekedNode.right) {
       currentNode = peekedNode.right;
     } else {
-      const node = stack.pop()!;
+      const node = visitedNodes.pop();
 
       previousNode = node;
 
-      result.push(node.value);
+      result.push(node);
     }
   }
 
   return result;
 }
 
-// console.log(postorderTreeTraversal(tree))
+// console.log(postorderTreeTraversal(tree));
 
 function preorderTreeTraversalRecursive(node: any) {
   console.log(node.value);
@@ -112,14 +111,14 @@ function inorderTreeTraversalRecursive(node: any) {
     inorderTreeTraversalRecursive(node.left);
   }
 
-  console.log(node.value);
+  console.log(node);
 
   if (node.right) {
     inorderTreeTraversalRecursive(node.right);
   }
 }
 
-// inorderTreeTraversal(tree);
+// inorderTreeTraversalRecursive(tree);
 
 function postorderTreeTraversalRecursive(node: any) {
   if (node.left) {
@@ -130,7 +129,7 @@ function postorderTreeTraversalRecursive(node: any) {
     postorderTreeTraversalRecursive(node.right);
   }
 
-  console.log(node.value);
+  console.log(node);
 }
 
 // postorderTreeTraversalRecursive(tree);
