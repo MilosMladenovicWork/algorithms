@@ -7,10 +7,11 @@ const graph = [
 
 const adjacencyMatrixToEdgeList = (graph: number[][]) => {
   const edgeList: number[][] = [];
+  const numberOfVertices = graph.length;
 
-  for (let i = 0; i < graph.length; i++) {
-    for (let j = 0; j < graph[i].length; j++) {
-      if (graph[i][j] === 1) {
+  for (let i = 0; i < numberOfVertices; i++) {
+    for (let j = 0; j < numberOfVertices; j++) {
+      if (graph[i][j] !== 0) {
         edgeList.push([i, j]);
       }
     }
