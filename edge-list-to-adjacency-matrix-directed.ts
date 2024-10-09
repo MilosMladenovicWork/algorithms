@@ -7,27 +7,26 @@ const edgeList = [
 ];
 
 const edgeListToAdjacencyMatrix = (edgeList: number[][]) => {
-  let visited: { [key: number]: boolean } = {};
-  let numberOfVertices = 0;
+  let highestVertexNumber: number = 0;
 
   for (const edge of edgeList) {
-    for (const vertex of edge) {
-      if (!visited[vertex]) {
-        visited[vertex] = true;
-        numberOfVertices++;
-      }
+    if (highestVertexNumber < edge[0]) {
+      highestVertexNumber = edge[0];
+    }
+    if (highestVertexNumber < edge[1]) {
+      highestVertexNumber = edge[1];
     }
   }
 
-  const matrix = Array.from({ length: numberOfVertices }, () =>
-    Array(numberOfVertices).fill(0)
+  const adjacencyMatrix = Array.from({ length: highestVertexNumber + 1 }, () =>
+    Array(highestVertexNumber + 1).fill(0)
   );
 
   for (const edge of edgeList) {
-    matrix[edge[0]][edge[1]] = 1;
+    adjacencyMatrix[edge[0]][edge[1]] = 1;
   }
 
-  return matrix;
+  return adjacencyMatrix;
 };
 
 console.log(edgeListToAdjacencyMatrix(edgeList));
